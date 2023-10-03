@@ -1,8 +1,14 @@
-#python is dynamic data type 
-name="Habtamu"
-age=24
+mystring = "hello"
+myfloat=10.0
+myint=20
 
-print("There once was a man named "+name+",")
-print("he was ",age," years old.")
-print("He really liked the name "+name+",")
-print("but didn't like being ",age,".")
+
+#testing code
+
+if mystring =="hello":
+    print("String: %s" %mystring)
+
+if isinstance(myfloat,float) and myfloat ==10.0:
+    print("Float: %f" %myfloat)
+if isinstance(myint,int) and myint==20:
+    print("Integer: %d" %myint)
