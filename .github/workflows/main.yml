@@ -1,0 +1,31 @@
+name: Build MSI
+
+on:
+  push:
+    branches:
+      - main  # Adjust this branch name as needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install WiX Toolset
+        run: |
+          choco install wixtoolset
+        shell: pwsh
+
+      - name: Build MSI
+        run: |
+          candle -arch x64 -ext WixUtilExtension -ext WixUIExtension MySetup.wxs  # Replace 'MySetup.wxs' with your .wxs file name
+          light -ext WixUIExtension -out MySetup.msi MySetup.wixobj
+        shell: pwsh
+
+      - name: Upload MSI
+        uses: actions/upload-artifact@v2
+        with:
+          name: MySetup
+          path: MySetup.msi  # Replace with the actual MSI filename
