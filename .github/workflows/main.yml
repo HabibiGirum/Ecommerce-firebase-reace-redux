@@ -1,31 +1,27 @@
-name: Build MSI
-
-on:
-  push:
-    branches:
-      - main  # Adjust this branch name as needed
-
+name: Build Advanced Installer Project (.AIP)  Demo
+on: [workflow_dispatch]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  advinst-aip-build-demo:
+    runs-on: windows-latest
+    name: Build Aip Demo
     steps:
-      - name: Checkout Code
+      - name: Check out repository code
         uses: actions/checkout@v2
-
-      - name: Install WiX Toolset
-        run: |
-          choco install wixtoolset
-        shell: pwsh
-
-      - name: Build MSI
-        run: |
-          candle -arch x64 -ext WixUtilExtension -ext WixUIExtension MySetup.wxs  # Replace 'MySetup.wxs' with your .wxs file name
-          light -ext WixUIExtension -out MySetup.msi MySetup.wixobj
-        shell: pwsh
-
-      - name: Upload MSI
+      - name: Build AIP
+        uses: caphyon/advinst-github-action@v1.0
+        with:
+          advinst-version: '19.0'
+          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+          advinst-enable-automation: 'true'
+          aip-path: ${{ github.workspace }}\arhitect.aip
+          aip-build-name: DefaultBuild
+          aip-package-name: setup.msi
+          aip-output-dir:  ${{ github.workspace }}\setup
+          aip-commands: |
+            SetProperty FOO="foo"
+            SetVersion 1.2.0
+      - name: Publish setup artifact
         uses: actions/upload-artifact@v2
         with:
-          name: MySetup
-          path: MySetup.msi  # Replace with the actual MSI filename
+          name: setup
+          path: ${{ github.workspace }}\setup\setup.msi
